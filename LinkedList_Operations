@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+struct Node* createNode(int val)
+{
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+    newNode->data = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void insert_at_end(struct Node** head, int val)
+{
+    struct Node* n = createNode(val);
+    if (*head == NULL)
+    {
+        *head = n;
+        return;
+    }
+    struct Node* temp = *head;
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+    temp->next = n;
+}
+
+void insert_at_head(struct Node** head, int val)
+{
+    struct Node* n = createNode(val);
+    n->next = *head;
+    *head = n;
+}
+
+void deletion_at_head(struct Node** head)
+{
+    if (*head == NULL)
+        return;
+
+    struct Node* r = *head;
+    *head = (*head)->next;
+    free(r);
+}
+
+void deletion_at_end(struct Node** head, int val)
+{
+    if (*head == NULL)
+        return;
+
+    if ((*head)->data == val)
+    {
+        struct Node* r = *head;
+        *head = (*head)->next;
+        free(r);
+        return;
+    }
+
+    struct Node* temp = *head;
+    while (temp->next != NULL && temp->next->data != val)
+    {
+        temp = temp->next;
+    }
+    if (temp->next == NULL)
+        return;
+    struct Node* todel = temp->next;
+    temp->next = temp->next->next;
+    free(todel);
+}
+
+int search(struct Node* head, int key)
+{
+    struct Node* temp = head;
+    while (temp != NULL)
+    {
+        if (temp->data == key)
+        {
+            return 1;
+        }
+        temp = temp->next;
+    }
+    return 0;
+}
+
+void display(struct Node* head)
+{
+    struct Node* temp = head;
+    while (temp != NULL)
+    {
+        printf("%d->", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main()
+{
+    struct Node* head = NULL;
+    insert_at_end(&head, 8);
+    insert_at_end(&head, 16);
+    insert_at_head(&head, 2);
+    display(head);
+    printf("%d\n", search(head, 11));
+    deletion_at_end(&head, 16);
+    deletion_at_head(&head);
+    display(head);
+
+    return 0;
+}
